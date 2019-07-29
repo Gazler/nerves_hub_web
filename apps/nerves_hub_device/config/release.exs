@@ -18,7 +18,11 @@ config :kernel,
   inet_dist_listen_min: 9100,
   inet_dist_listen_max: 9155
 
-config :rollbax, access_token: System.get_env("ROLLBAR_ACCESS_TOKEN")
+if rollbar_access_token = System.get_env("ROLLBAR_ACCESS_TOKEN") do
+  config :rollbax, access_token: rollbar_access_token
+else
+  config :rollbax, enabled: false
+end
 
 config :nerves_hub_web_core, NervesHubWebCore.Firmwares.Upload.S3,
   bucket: System.fetch_env!("S3_BUCKET_NAME")
@@ -36,3 +40,18 @@ config :nerves_hub_www, NervesHubWWW.Mailer,
   port: System.fetch_env!("SES_PORT"),
   username: System.fetch_env!("SMTP_USERNAME"),
   password: System.fetch_env!("SMTP_PASSWORD")
+
+host = System.fetch_env!("HOST")
+
+config :nerves_hub_device, NervesHubDeviceWeb.Endpoint,
+  url: [host: host],
+  https: [
+    port: 443,
+    otp_app: :nerves_hub_device,
+    # Enable client SSL
+    verify: :verify_peer,
+    fail_if_no_peer_cert: true,
+    keyfile: "/etc/ssl/#{host}-key.pem",
+    certfile: "/etc/ssl/#{host}.pem",
+    cacertfile: "/etc/ssl/ca.pem"
+  ]

@@ -67,8 +67,8 @@ deploy: &deploy
     command: |
       ecs-deploy \
         -c $CLUSTER \
-        -n nerves-hub-ca \
-        -i nerveshub/nerves_hub_ca:$DOCKER_TAG \
+        -n $SERVICE \
+        -i nerveshub/$APP_NAME:$DOCKER_TAG \
         -t 600 \
         --enable-rollback \
         --max-definitions 10
