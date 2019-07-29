@@ -18,7 +18,7 @@ config :kernel,
   inet_dist_listen_min: 9100,
   inet_dist_listen_max: 9155
 
-config :rollbax, access_token: System.fetch_env!("ROLLBAR_ACCESS_TOKEN")
+config :rollbax, access_token: System.get_env("ROLLBAR_ACCESS_TOKEN")
 
 config :nerves_hub_web_core, NervesHubWebCore.Firmwares.Upload.S3,
   bucket: System.fetch_env!("S3_BUCKET_NAME")
