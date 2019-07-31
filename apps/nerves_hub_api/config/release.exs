@@ -41,6 +41,17 @@ config :nerves_hub_www, NervesHubWWW.Mailer,
 
 host = System.fetch_env!("HOST")
 
+cacert_pems = [
+  "/etc/ssl/user-root-ca.pem",
+  "/etc/ssl/root-ca.pem"
+]
+
+cacerts =
+  cacert_pems
+  |> Enum.map(&File.read!/1)
+  |> Enum.map(&X509.Certificate.from_pem!/1)
+  |> Enum.map(&X509.Certificate.to_der/1)
+
 config :nerves_hub_api, NervesHubAPIWeb.Endpoint,
   url: [host: host],
   https: [
@@ -50,7 +61,7 @@ config :nerves_hub_api, NervesHubAPIWeb.Endpoint,
     verify: :verify_peer,
     keyfile: "/etc/ssl/#{host}-key.pem",
     certfile: "/etc/ssl/#{host}.pem",
-    cacertfile: "/etc/ssl/ca.pem"
+    cacerts: cacerts ++ :certifi.cacerts()
   ]
 
 ca_host = System.fetch_env!("CA_HOST")
