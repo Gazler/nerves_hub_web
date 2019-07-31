@@ -52,3 +52,14 @@ config :nerves_hub_api, NervesHubAPIWeb.Endpoint,
     certfile: "/etc/ssl/#{host}.pem",
     cacertfile: "/etc/ssl/ca.pem"
   ]
+
+ca_host = System.fetch_env!("CA_HOST")
+
+config :nerves_hub_web_core, NervesHubWebCore.CertificateAuthority,
+  host: ca_host,
+  port: 8443,
+  ssl: [
+    keyfile: "/etc/ssl/#{host}-key.pem",
+    certfile: "/etc/ssl/#{host}.pem",
+    cacertfile: "/etc/ssl/ca.pem"
+  ]
